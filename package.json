@@ -1,0 +1,19 @@
+{
+  "name": "devsync-board",
+  "version": "1.0.0",
+  "description": "Real-time system architecture drawing board",
+  "main": "index.js",
+  "keywords": [
+    "socket.io",
+    "whiteboard"
+  ],
+  "dependencies": {
+    "express": "4.9.x",
+    "socket.io": "latest"
+  },
+  "scripts": {
+    "start": "npm install && node index.js"
+  },
+  "author": "Prapoorna",
+  "license": "MIT"
+}
