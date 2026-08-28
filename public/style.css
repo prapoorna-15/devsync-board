@@ -5,63 +5,72 @@ html, body {
 }
 
 body {
-	background: rgb(55,55,55);
-	font-family: sans-serif;
+    background-color: #18181b;
+    background-image: radial-gradient(#3f3f46 1px, transparent 1px);
+    background-size: 20px 20px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #f4f4f5;
 }
 
 button {
-	background: #06f;
-	box-shadow: 0 3px 0 0 rgba(0, 0, 0, 0.5);
-	color: #fff;
-	outline: none;
-	cursor: pointer;
-	text-shadow: 0 1px #06f;
-	display: inline-block;
-	font-size: 16px;
-	line-height: 40px;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 20px;
-    margin-left: 20px;
+    background: #27272a;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    color: #f4f4f5;
+    outline: none;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 36px;
+    border: 1px solid #3f3f46;
+    border-radius: 6px;
+    padding: 0 16px;
+    margin-left: 12px;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background: #3f3f46;
+    border-color: #52525b;
 }
 
 canvas {
-	border-radius: 5px;
-	cursor: url(../img/pen.png), crosshair;
+    border-radius: 8px;
+    cursor: url(../img/pen.png), crosshair;
+    background: transparent;
 }
 
 output {
-    background: #444;
+    background: #27272a;
     color: #fff;
     border-radius: 5px;
     padding: 5px;
     font-weight: 700;
+    border: 1px solid #3f3f46;
 }
 
 ul {
-	list-style:none;
-	margin: 0;
-	float: 	left;
-	padding: 10px 0 20px;
-	width: 100%;
-	text-align: center;
+    list-style: none;
+    margin: 0;
+    float: left;
+    padding: 10px 0 20px;
+    width: 100%;
+    text-align: center;
 }
 
 ul li, #newColor {
-	display:block;
-	height: 54px;
-	width: 54px;
-	border-radius: 20px;
-	cursor: pointer;
-	border: 0;
-	box-shadow: 0 3px 0 0 #222;
+    display: block;
+    height: 54px;
+    width: 54px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 0;
+    box-shadow: 0 3px 0 0 #222;
 }
 
 ul li {
-	display: inline-block;
-	margin: 0 5px 10px;
+    display: inline-block;
+    margin: 0 5px 10px;
 }
-
 
 /* ID Styles */
 
@@ -73,44 +82,48 @@ ul li {
     position: relative;
     top: 10px;
     left: 50%;
-    background: #fff;
+    background: #27272a;
+    border: 1px solid #3f3f46;
+    border-radius: 8px;
 }
 
 #colorSelect {
-	background: #fff;
-	border-radius: 5px;
-	clear: both;
-	margin: 20px auto 0;
-	padding: 10px;
-	width: 30%;
-	position: relative;
-	display:none;
+    background: #27272a;
+    border: 1px solid #3f3f46;
+    color: #f4f4f5;
+    border-radius: 5px;
+    clear: both;
+    margin: 20px auto 0;
+    padding: 10px;
+    width: 30%;
+    position: relative;
+    display: none;
 }
 
 #colorSelect:after {
-	bottom: 100%;
-	left: 50%;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
-	border-color: rgba(255, 255, 255, 0);
-	border-bottom-color: #fff;
-	border-width: 10px;
-	margin-left: -10px;
+    bottom: 100%;
+    left: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(255, 255, 255, 0);
+    border-bottom-color: #27272a;
+    border-width: 10px;
+    margin-left: -10px;
 }
 
 #colorSelect button {
-	border: none;
-	border-top: 1px solid #ddd;
+    border: none;
+    border-top: 1px solid #3f3f46;
     border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-	border-radius: 0 0 5px 5px;
-	clear: both;
-	margin: 10px 0 -7px;
-	padding: 5px 10px;
-	width: 100%;
+    border-radius: 0 0 5px 5px;
+    clear: both;
+    margin: 10px 0 -7px;
+    padding: 5px 10px;
+    width: 100%;
 }
 
 #container {
@@ -118,11 +131,11 @@ ul li {
 }
 
 #controls {
-	min-height: 60px;
-    width: 90%; 
-	margin: 0 auto;
-	border-radius: 5px;
-	overflow: hidden;
+    min-height: 60px;
+    width: 90%;
+    margin: 0 auto;
+    border-radius: 5px;
+    overflow: hidden;
 }
 
 #curcolorContainer {
@@ -138,10 +151,10 @@ ul li {
     width: 40%;
     height: 70%;
     padding: 40px;
-    background-color: #06f;
-    box-shadow: 0 3px 3px 3px rgba(0, 0, 0, 0.5), 3px 0 3px 3px rgba(0, 0, 0, 0.5);
-    text-shadow: 1px 1px 1px #000;
-    color: white;
+    background-color: #18181b;
+    border: 1px solid #3f3f46;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    color: #f4f4f5;
     border-radius: 10px;
     position: absolute;
     top: 5%;
@@ -155,7 +168,7 @@ ul li {
 }
 
 #helpContent a, #helpContent a:visited {
-    color: maroon;
+    color: #38bdf8;
     text-decoration: none;
 }
 
@@ -165,14 +178,14 @@ ul li {
     right: -3%;
     font-size: 2em;
     border-radius: 50%;
-    background: red;
+    background: #ef4444;
     color: white;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 #helpContentX:hover {
-    background: white;
-    color: red;
+    background: #f87171;
+    color: white;
 }
 
 #helpInnerContent {
@@ -182,14 +195,13 @@ ul li {
 }
 
 #newColor {
-	width: 80px;
-	height: 120px;
-	border-radius: 3px;
-	box-shadow: none;
-	float: left;
-	border: none;
-	margin: 10px 20px 20px 10px;
-
+    width: 80px;
+    height: 120px;
+    border-radius: 3px;
+    box-shadow: none;
+    float: left;
+    border: none;
+    margin: 10px 20px 20px 10px;
 }
 
 #optionsHolder {
@@ -204,28 +216,28 @@ ul li {
 }
 
 #revealColorSelect {
-	border: none;
-	border-radius: 5px;
-	margin: 10px 0px 10px 20px;
-	padding: 5px 20px;
+    border: none;
+    border-radius: 5px;
+    margin: 10px 0px 10px 20px;
+    padding: 5px 20px;
 }
 
 #sliders p {
-	margin: 8px 0;
-	vertical-align: middle;
+    margin: 8px 0;
+    vertical-align: middle;
 }
 
 #sliders label {
-	display: inline-block;
-	margin: 0 10px 0 0;
-	width: 35px;
-	font-size: 14px;
-	color: #6D574E;
+    display: inline-block;
+    margin: 0 10px 0 0;
+    width: 35px;
+    font-size: 14px;
+    color: #a1a1aa;
 }
 
 #sliders input {
-	position: relative;
-	top: 2px;
+    position: relative;
+    top: 2px;
 }
 
 #imageTemp {
@@ -247,10 +259,10 @@ ul li {
     cursor: pointer;
 }
 
-/* Classes */
+/* classes */
 
 .colem {
-    color: lime;
+    color: #22c55e;
 }
 
 .copytext {
@@ -258,15 +270,15 @@ ul li {
 }
 
 .selected {
-	border: 7px solid #fff;
-	width: 40px;
-	height: 40px;
+    border: 7px solid #38bdf8;
+    width: 40px;
+    height: 40px;
 }
 
 .selectedLight {
-	border: 7px solid #000;
-	width: 40px;
-	height: 40px;
+    border: 7px solid #38bdf8;
+    width: 40px;
+    height: 40px;
 }
 
 /* MEDIA QUERIES */
