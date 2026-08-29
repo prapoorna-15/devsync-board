@@ -47,6 +47,16 @@
         document.getElementById('line-button').onclick = function() { tool = new tools.line(); };
         document.getElementById('text-button').onclick = function() { tool = new tools.text(); };
 
+       
+
+        socket.on('users_count', function(count) {
+          var userCountBadge = document.getElementById('user-count');
+          if (userCountBadge) {
+            userCountBadge.textContent = count + (count === 1 ? ' User Online' : ' Users Online');
+          }
+        });
+
+      
         document.getElementById('clear-all').onclick = function() {
           contexto.clearRect(0, 0, canvaso.width, canvaso.height);
           socket.emit('Clearboard', true);
@@ -363,4 +373,41 @@
       init();
     }, false);
   }
+})();
+// --- Independent Utility Features (Download, Theme Toggle, User Count) ---
+(function() {
+  window.addEventListener('load', function() {
+    // 1. Download Board as PNG Image
+    var downloadBtn = document.getElementById('download-btn');
+    if (downloadBtn) {
+      downloadBtn.addEventListener('click', function() {
+        var canvas = document.getElementById('imageView');
+        if (!canvas) return;
+
+        var tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        var tempCtx = tempCanvas.getContext('2d');
+
+        var isLight = document.body.classList.contains('light-theme');
+        tempCtx.fillStyle = isLight ? '#f8f9fa' : '#0d1117';
+        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+
+        tempCtx.drawImage(canvas, 0, 0);
+
+        var link = document.createElement('a');
+        link.download = 'whiteboard-' + Date.now() + '.png';
+        link.href = tempCanvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+
+    // 2. Light / Dark Theme Toggle
+    var themeBtn = document.getElementById('theme-toggle-btn');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function() {
+        document.body.classList.toggle('light-theme');
+      });
+    }
+  });
 })();

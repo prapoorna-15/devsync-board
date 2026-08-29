@@ -64,3 +64,17 @@ html, body {
   color: #ffffff;
   background: rgba(0, 0, 0, 0.4);
 }
+
+/* Isolated Light Mode Theme Overrides */
+body.light-theme {
+  background-color: #f8f9fa !important;
+}
+
+body.light-theme #controls {
+  background: rgba(230, 230, 230, 0.95) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+body.light-theme #controls label {
+  color: #212529 !important;
+}

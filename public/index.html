@@ -11,11 +11,14 @@
 <body>
   <div class="container-fluid" style="padding: 0;">
     
-    <div class="alert alert-info text-center" style="margin: 10px auto; width: 90%; max-width: 900px; padding: 8px; position: relative; z-index: 1000;">
-      <strong>Socket IO &#10084;</strong> - Realtime Board. Open <a class="linkToBoard" target="_blank" style="cursor:pointer; text-decoration: underline; font-weight: bold;">link</a> in another tab to draw simultaneously.
+    <!-- Header Banner with Live User Counter -->
+    <div class="alert alert-info text-center" style="margin: 10px auto; width: 90%; max-width: 900px; padding: 8px; position: relative; z-index: 1000; display: flex; justify-content: space-between; align-items: center;">
+      <span><strong>Socket IO &#10084;</strong> - Realtime Board. Open <a class="linkToBoard" target="_blank" style="cursor:pointer; text-decoration: underline; font-weight: bold;">link</a> in another tab to draw.</span>
+      <span id="user-count" class="badge badge-success" style="background-color: #28a745; font-size: 13px; padding: 6px 10px;">1 User Online</span>
     </div>
 
     <div id="controls">
+      <!-- Existing Buttons (Keep as they are) -->
       <button type="button" class="btn btn-warning btn-sm" id="pencil-button">Pencil</button>
       <button type="button" class="btn btn-warning btn-sm" id="rect-button">Rectangle</button>
       <button type="button" class="btn btn-warning btn-sm" id="circle-button">Circle</button>
@@ -24,6 +27,7 @@
       <button type="button" class="btn btn-warning btn-sm" id="text-button">Text</button>
       <button type="button" class="btn btn-danger btn-sm" id="clear-all">Clear All</button>
 
+      <!-- Existing Pickers (Keep as they are) -->
       <label for="colour-picker" style="color:#fff; margin-left: 8px; margin-right: 2px;">Colour:</label>
       <input id="colour-picker" value="ffffff" style="width:70px;" class="jscolor {width:243, height:150, position:'right'}">
 
@@ -56,6 +60,10 @@
           <option value="48">48px</option>
         </select>
       </span>
+
+      <!-- NEW Isolated Utility Buttons -->
+      <button type="button" class="btn btn-success btn-sm" id="download-btn" style="margin-left: 10px;">💾 Save PNG</button>
+      <button type="button" class="btn btn-secondary btn-sm" id="theme-toggle-btn">🌓 Theme</button>
     </div>
     <div id="container">
       <canvas id="imageView" class="whiteboard"></canvas>
