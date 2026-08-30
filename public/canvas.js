@@ -11,6 +11,64 @@
       var tool;
       var tool_default = 'pencil';
 
+      // --- Reusable Drawing Rendering Function ---
+      function renderDrawing(data) {
+        if (!data) return;
+        
+        contexto.strokeStyle = data.color || '#000000';
+        contexto.fillStyle = data.color || '#000000';
+        contexto.lineWidth = data.size || 1;
+
+        if (data.tool === 'pencil') {
+          if (data.state === 'start') {
+            contexto.beginPath();
+            contexto.moveTo(data.x1, data.y1);
+          } else if (data.state === 'move') {
+            contexto.lineTo(data.x1, data.y1);
+            contexto.stroke();
+          }
+        } else if (data.tool === 'rect') {
+          var x = Math.min(data.x1, data.x0);
+          var y = Math.min(data.y1, data.y0);
+          var w = Math.abs(data.x1 - data.x0);
+          var h = Math.abs(data.y1 - data.y0);
+          contexto.strokeRect(x, y, w, h);
+        } else if (data.tool === 'circle') {
+          var radius = Math.sqrt(Math.pow(data.x1 - data.x0, 2) + Math.pow(data.y1 - data.y0, 2));
+          contexto.beginPath();
+          contexto.arc(data.x0, data.y0, radius, 0, 2 * Math.PI);
+          contexto.stroke();
+        } else if (data.tool === 'ellipse') {
+          var rx = Math.abs(data.x1 - data.x0) / 2;
+          var ry = Math.abs(data.y1 - data.y0) / 2;
+          var cx = Math.min(data.x0, data.x1) + rx;
+          var cy = Math.min(data.y0, data.y1) + ry;
+          contexto.beginPath();
+          contexto.ellipse(cx, cy, rx, ry, 0, 0, 2 * Math.PI);
+          contexto.stroke();
+        } else if (data.tool === 'line') {
+          contexto.beginPath();
+          contexto.moveTo(data.x0, data.y0);
+          contexto.lineTo(data.x1, data.y1);
+          contexto.stroke();
+        } else if (data.tool === 'text') {
+          if (!data.text) return;
+
+          if (data.font) {
+            contexto.font = data.font;
+          } else {
+            var fontSize = data.fontSize || 20;
+            var fontFamily = data.fontFamily || 'Arial';
+            contexto.font = fontSize + 'px ' + fontFamily;
+          }
+
+          var textX = (data.x !== undefined) ? data.x : ((data.x0 !== undefined) ? data.x0 : data.x1);
+          var textY = (data.y !== undefined) ? data.y : ((data.y0 !== undefined) ? data.y0 : data.y1);
+
+          contexto.fillText(data.text, textX, textY);
+        }
+      }
+
       function init () {
         canvaso = document.getElementById('imageView');
         if (!canvaso || !canvaso.getContext) return;
@@ -47,8 +105,6 @@
         document.getElementById('line-button').onclick = function() { tool = new tools.line(); };
         document.getElementById('text-button').onclick = function() { tool = new tools.text(); };
 
-       
-
         socket.on('users_count', function(count) {
           var userCountBadge = document.getElementById('user-count');
           if (userCountBadge) {
@@ -56,11 +112,14 @@
           }
         });
 
-      
-        document.getElementById('clear-all').onclick = function() {
-          contexto.clearRect(0, 0, canvaso.width, canvaso.height);
-          socket.emit('Clearboard', true);
-        };
+        // Clear button handler
+        var clearBtn = document.getElementById('clear-all') || document.getElementById('clear-btn');
+        if (clearBtn) {
+          clearBtn.onclick = function() {
+            contexto.clearRect(0, 0, canvaso.width, canvaso.height);
+            socket.emit('Clearboard', true);
+          };
+        }
 
         canvas.addEventListener('mousedown', ev_canvas, false);
         canvas.addEventListener('mousemove', ev_canvas, false);
@@ -82,6 +141,7 @@
         context.clearRect(0, 0, canvas.width, canvas.height);
       }
 
+      // --- Tools Definitions ---
       tools.pencil = function () {
         var tool = this;
         this.started = false;
@@ -323,46 +383,14 @@
         };
       };
 
-      socket.on('drawing', function (data) {
-        contexto.strokeStyle = data.color;
-        contexto.lineWidth = data.size;
+      // --- Socket Event Handlers ---
+      socket.on('drawing', renderDrawing);
 
-        if (data.tool === 'pencil') {
-          if (data.state === 'start') {
-            contexto.beginPath();
-            contexto.moveTo(data.x1, data.y1);
-          } else if (data.state === 'move') {
-            contexto.lineTo(data.x1, data.y1);
-            contexto.stroke();
-          }
-        } else if (data.tool === 'rect') {
-          var x = Math.min(data.x1, data.x0);
-          var y = Math.min(data.y1, data.y0);
-          var w = Math.abs(data.x1 - data.x0);
-          var h = Math.abs(data.y1 - data.y0);
-          contexto.strokeRect(x, y, w, h);
-        } else if (data.tool === 'circle') {
-          var radius = Math.sqrt(Math.pow(data.x1 - data.x0, 2) + Math.pow(data.y1 - data.y0, 2));
-          contexto.beginPath();
-          contexto.arc(data.x0, data.y0, radius, 0, 2 * Math.PI);
-          contexto.stroke();
-        } else if (data.tool === 'ellipse') {
-          var rx = Math.abs(data.x1 - data.x0) / 2;
-          var ry = Math.abs(data.y1 - data.y0) / 2;
-          var cx = Math.min(data.x0, data.x1) + rx;
-          var cy = Math.min(data.y0, data.y1) + ry;
-          contexto.beginPath();
-          contexto.ellipse(cx, cy, rx, ry, 0, 0, 2 * Math.PI);
-          contexto.stroke();
-        } else if (data.tool === 'line') {
-          contexto.beginPath();
-          contexto.moveTo(data.x0, data.y0);
-          contexto.lineTo(data.x1, data.y1);
-          contexto.stroke();
-        } else if (data.tool === 'text') {
-          contexto.font = data.font;
-          contexto.fillStyle = data.color;
-          contexto.fillText(data.text, data.x, data.y);
+      socket.on('history', function (historyData) {
+        if (Array.isArray(historyData)) {
+          historyData.forEach(function (data) {
+            renderDrawing(data);
+          });
         }
       });
 
@@ -370,11 +398,13 @@
         contexto.clearRect(0, 0, canvaso.width, canvaso.height);
       });
 
+      // Initialize the app
       init();
     }, false);
   }
 })();
-// --- Independent Utility Features (Download, Theme Toggle, User Count) ---
+
+// --- Independent Utility Features (Download, Theme Toggle) ---
 (function() {
   window.addEventListener('load', function() {
     // 1. Download Board as PNG Image
