@@ -1,52 +1,53 @@
 const express = require('express');
-const app = express();
 const http = require('http');
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
 const path = require('path');
+const { Server } = require('socket.io');
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Serve index.html on root request
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
 });
 
-// Store drawing history in memory
+// Serve all static files from the public directory
+const publicPath = path.join(__dirname, 'public');
+app.use(express.static(publicPath));
+
+// Fallback route to serve index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(publicPath, 'index.html'));
+});
+
 let drawingHistory = [];
 let onlineUsers = 0;
 
-// Socket.IO Connection Handler
 io.on('connection', (socket) => {
   onlineUsers++;
   io.emit('users_count', onlineUsers);
 
-  // Send past drawings to newly connected user
+  // Send drawing history to newly connected client
   socket.emit('history', drawingHistory);
 
-  // Listen for incoming drawings and broadcast
   socket.on('drawing', (data) => {
     drawingHistory.push(data);
     socket.broadcast.emit('drawing', data);
   });
 
-  // Listen for clear board command
   socket.on('Clearboard', () => {
     drawingHistory = [];
     io.emit('Clearboard');
   });
 
-  // Handle user disconnect
   socket.on('disconnect', () => {
     onlineUsers = Math.max(0, onlineUsers - 1);
     io.emit('users_count', onlineUsers);
   });
 });
 
-// Bind to host 0.0.0.0 as required by Render
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 10000;
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });

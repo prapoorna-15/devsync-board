@@ -5,18 +5,24 @@
   var tools = {};
   var textarea;
 
+  function getColor() {
+    var picker = document.getElementById('colour-picker');
+    if (!picker) return '#ffffff';
+    var val = picker.value;
+    return val.startsWith('#') ? val : '#' + val;
+  }
+
   if (window.addEventListener) {
     window.addEventListener('load', function () {
       var canvas, context, canvaso, contexto;
       var tool;
       var tool_default = 'pencil';
 
-      // --- Reusable Drawing Rendering Function ---
       function renderDrawing(data) {
         if (!data) return;
         
-        contexto.strokeStyle = data.color || '#000000';
-        contexto.fillStyle = data.color || '#000000';
+        contexto.strokeStyle = data.color || '#ffffff';
+        contexto.fillStyle = data.color || '#ffffff';
         contexto.lineWidth = data.size || 1;
 
         if (data.tool === 'pencil') {
@@ -53,7 +59,6 @@
           contexto.stroke();
         } else if (data.tool === 'text') {
           if (!data.text) return;
-
           if (data.font) {
             contexto.font = data.font;
           } else {
@@ -61,10 +66,8 @@
             var fontFamily = data.fontFamily || 'Arial';
             contexto.font = fontSize + 'px ' + fontFamily;
           }
-
           var textX = (data.x !== undefined) ? data.x : ((data.x0 !== undefined) ? data.x0 : data.x1);
           var textY = (data.y !== undefined) ? data.y : ((data.y0 !== undefined) ? data.y0 : data.y1);
-
           contexto.fillText(data.text, textX, textY);
         }
       }
@@ -81,16 +84,36 @@
         if (!canvas) return;
 
         canvas.id = 'imageTemp';
+        canvas.style.position = 'absolute';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.zIndex = '2';
         container.appendChild(canvas);
 
         context = canvas.getContext('2d');
 
         function setCanvasSize() {
-          canvaso.width = window.innerWidth;
-          canvaso.height = window.innerHeight;
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
+          var w = container.clientWidth || window.innerWidth;
+          var h = container.clientHeight || window.innerHeight;
+
+          var tempCanvas = document.createElement('canvas');
+          tempCanvas.width = canvaso.width;
+          tempCanvas.height = canvaso.height;
+          var tempCtx = tempCanvas.getContext('2d');
+          if (canvaso.width > 0 && canvaso.height > 0) {
+            tempCtx.drawImage(canvaso, 0, 0);
+          }
+
+          canvaso.width = w;
+          canvaso.height = h;
+          canvas.width = w;
+          canvas.height = h;
+
+          if (tempCanvas.width > 0 && tempCanvas.height > 0) {
+            contexto.drawImage(tempCanvas, 0, 0);
+          }
         }
+
         setCanvasSize();
         window.addEventListener('resize', setCanvasSize);
 
@@ -112,7 +135,6 @@
           }
         });
 
-        // Clear button handler
         var clearBtn = document.getElementById('clear-all') || document.getElementById('clear-btn');
         if (clearBtn) {
           clearBtn.onclick = function() {
@@ -141,7 +163,6 @@
         context.clearRect(0, 0, canvas.width, canvas.height);
       }
 
-      // --- Tools Definitions ---
       tools.pencil = function () {
         var tool = this;
         this.started = false;
@@ -153,7 +174,7 @@
           
           socket.emit('drawing', {
             x1: ev._x, y1: ev._y, x2: ev._x, y2: ev._y,
-            color: "#" + document.getElementById('colour-picker').value, 
+            color: getColor(), 
             size: document.getElementById('line-width').value, 
             tool: 'pencil', state: 'start'
           });
@@ -161,14 +182,14 @@
 
         this.mousemove = function (ev) {
           if (tool.started) {
-            context.strokeStyle = "#" + document.getElementById('colour-picker').value;
+            context.strokeStyle = getColor();
             context.lineWidth = document.getElementById('line-width').value;
             context.lineTo(ev._x, ev._y);
             context.stroke();
 
             socket.emit('drawing', {
               x1: ev._x, y1: ev._y,
-              color: "#" + document.getElementById('colour-picker').value,
+              color: getColor(),
               size: document.getElementById('line-width').value,
               tool: 'pencil', state: 'move'
             });
@@ -197,7 +218,7 @@
         this.mousemove = function (ev) {
           if (!tool.started) return;
           context.clearRect(0, 0, canvas.width, canvas.height);
-          context.strokeStyle = "#" + document.getElementById('colour-picker').value;
+          context.strokeStyle = getColor();
           context.lineWidth = document.getElementById('line-width').value;
           
           var x = Math.min(ev._x, tool.x0);
@@ -215,7 +236,7 @@
             img_update();
             socket.emit('drawing', {
               x0: tool.x0, y0: tool.y0, x1: ev._x, y1: ev._y,
-              color: "#" + document.getElementById('colour-picker').value,
+              color: getColor(),
               size: document.getElementById('line-width').value, tool: 'rect'
             });
           }
@@ -235,7 +256,7 @@
         this.mousemove = function (ev) {
           if (!tool.started) return;
           context.clearRect(0, 0, canvas.width, canvas.height);
-          context.strokeStyle = "#" + document.getElementById('colour-picker').value;
+          context.strokeStyle = getColor();
           context.lineWidth = document.getElementById('line-width').value;
 
           var radius = Math.sqrt(Math.pow(ev._x - tool.x0, 2) + Math.pow(ev._y - tool.y0, 2));
@@ -251,7 +272,7 @@
             img_update();
             socket.emit('drawing', {
               x0: tool.x0, y0: tool.y0, x1: ev._x, y1: ev._y,
-              color: "#" + document.getElementById('colour-picker').value,
+              color: getColor(),
               size: document.getElementById('line-width').value, tool: 'circle'
             });
           }
@@ -271,7 +292,7 @@
         this.mousemove = function (ev) {
           if (!tool.started) return;
           context.clearRect(0, 0, canvas.width, canvas.height);
-          context.strokeStyle = "#" + document.getElementById('colour-picker').value;
+          context.strokeStyle = getColor();
           context.lineWidth = document.getElementById('line-width').value;
 
           var rx = Math.abs(ev._x - tool.x0) / 2;
@@ -291,7 +312,7 @@
             img_update();
             socket.emit('drawing', {
               x0: tool.x0, y0: tool.y0, x1: ev._x, y1: ev._y,
-              color: "#" + document.getElementById('colour-picker').value,
+              color: getColor(),
               size: document.getElementById('line-width').value, tool: 'ellipse'
             });
           }
@@ -311,7 +332,7 @@
         this.mousemove = function (ev) {
           if (!tool.started) return;
           context.clearRect(0, 0, canvas.width, canvas.height);
-          context.strokeStyle = "#" + document.getElementById('colour-picker').value;
+          context.strokeStyle = getColor();
           context.lineWidth = document.getElementById('line-width').value;
 
           context.beginPath();
@@ -327,7 +348,7 @@
             img_update();
             socket.emit('drawing', {
               x0: tool.x0, y0: tool.y0, x1: ev._x, y1: ev._y,
-              color: "#" + document.getElementById('colour-picker').value,
+              color: getColor(),
               size: document.getElementById('line-width').value, tool: 'line'
             });
           }
@@ -346,10 +367,11 @@
           textarea.style.position = 'absolute';
           textarea.style.top = ev.clientY + 'px';
           textarea.style.left = ev.clientX + 'px';
-          textarea.style.color = "#" + document.getElementById('colour-picker').value;
+          textarea.style.color = getColor();
           textarea.style.fontFamily = document.getElementById('draw-text-font-family').value;
           textarea.style.fontSize = document.getElementById('draw-text-font-size').value + 'px';
           textarea.style.outline = 'none';
+          textarea.style.zIndex = '1001';
 
           textarea.onblur = function () {
             var text = textarea.value;
@@ -383,7 +405,6 @@
         };
       };
 
-      // --- Socket Event Handlers ---
       socket.on('drawing', renderDrawing);
 
       socket.on('history', function (historyData) {
@@ -398,16 +419,13 @@
         contexto.clearRect(0, 0, canvaso.width, canvaso.height);
       });
 
-      // Initialize the app
       init();
     }, false);
   }
 })();
 
-// --- Independent Utility Features (Download, Theme Toggle) ---
 (function() {
   window.addEventListener('load', function() {
-    // 1. Download Board as PNG Image
     var downloadBtn = document.getElementById('download-btn');
     if (downloadBtn) {
       downloadBtn.addEventListener('click', function() {
@@ -432,7 +450,6 @@
       });
     }
 
-    // 2. Light / Dark Theme Toggle
     var themeBtn = document.getElementById('theme-toggle-btn');
     if (themeBtn) {
       themeBtn.addEventListener('click', function() {
