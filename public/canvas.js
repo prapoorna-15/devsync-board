@@ -1,7 +1,13 @@
 'use strict';
 
 (function() {
-  var socket = io();
+  // NEW: Automatically extract ?room= from URL or default to 'main'
+var urlParams = new URLSearchParams(window.location.search);
+var currentRoom = urlParams.get('room') || 'main';
+
+var socket = io({
+  query: { room: currentRoom }
+});
   var tools = {};
   var textarea;
 
