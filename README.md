@@ -31,3 +31,7 @@ A real-time collaborative whiteboard web application built with **Node.js**, **E
    ```bash
    git clone [https://github.com/prapoorna-15/devsync-board.git](https://github.com/prapoorna-15/devsync-board.git)
    cd devsync-board
+
+   ## 🌐 Live Demo
+
+Check out the live application here: [DevSync Board Live](https://devsync-board.onrender.com)

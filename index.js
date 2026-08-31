@@ -1,42 +1,52 @@
 const express = require('express');
 const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-const port = process.env.PORT || 3001;
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+const path = require('path');
 
-app.use(express.static(__dirname + '/public'));
+// 1. Serve static files from the 'public' folder
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Track active connected users & drawing history
-let connectedUsers = 0;
+// 2. Explicit route for home page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Store drawing history in memory
 let drawingHistory = [];
+let onlineUsers = 0;
 
-function onConnection(socket){
-  // Increase count when a user connects and notify all clients
-  connectedUsers++;
-  io.emit('users_count', connectedUsers);
+// Socket.IO Connection Handler
+io.on('connection', (socket) => {
+  onlineUsers++;
+  io.emit('users_count', onlineUsers);
 
-  // Send accumulated history to the newly connected client
+  // Send past drawings to the newly connected user
   socket.emit('history', drawingHistory);
 
-  // Store drawing data and broadcast to other users
-  socket.on('drawing', function(data){
+  // Listen for incoming drawings and broadcast
+  socket.on('drawing', (data) => {
     drawingHistory.push(data);
     socket.broadcast.emit('drawing', data);
   });
 
-  // Handle board reset: clear server history and broadcast to everyone
-  socket.on('Clearboard', function(data){
+  // Listen for clear board command
+  socket.on('Clearboard', () => {
     drawingHistory = [];
-    io.emit('Clearboard', data);
+    io.emit('Clearboard');
   });
 
-  // Decrease count when a user disconnects and notify remaining clients
-  socket.on('disconnect', function(){
-    connectedUsers = Math.max(0, connectedUsers - 1);
-    io.emit('users_count', connectedUsers);
+  // Handle user disconnect
+  socket.on('disconnect', () => {
+    onlineUsers = Math.max(0, onlineUsers - 1);
+    io.emit('users_count', onlineUsers);
   });
-}
+});
 
-io.on('connection', onConnection);
-
-http.listen(port, () => console.log('Listening on port ' + port));
+// Dynamic port for Render deployment
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});
