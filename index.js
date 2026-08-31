@@ -6,10 +6,10 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 const path = require('path');
 
-// 1. Serve static files from the 'public' folder
+// Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 2. Explicit route for home page
+// Serve index.html on root request
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Dynamic port for Render deployment
+// Dynamic port binding for Render deployment
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
