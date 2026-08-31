@@ -23,7 +23,7 @@ io.on('connection', (socket) => {
   onlineUsers++;
   io.emit('users_count', onlineUsers);
 
-  // Send past drawings to the newly connected user
+  // Send past drawings to newly connected user
   socket.emit('history', drawingHistory);
 
   // Listen for incoming drawings and broadcast
@@ -45,8 +45,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// Dynamic port binding for Render deployment
+// Bind to host 0.0.0.0 as required by Render
 const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
 });
