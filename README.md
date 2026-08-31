@@ -1,39 +1,33 @@
 
-## Collaborative Whiteboard - Socket.IO 
+# 🎨 DevSync Board
 
-A simple collaborative whiteboard using socketIO with drawing tools which enables multiple users to draw at the same time. Open links in two seperate tabs in your browser or Open link in another computer try drawing simultaneously in both. 
+A real-time collaborative whiteboard web application built with **Node.js**, **Express**, **Socket.IO**, and the **HTML5 Canvas API**. Multiple users can draw, interact, and sync canvas states instantly across browsers.
 
-Cool, isn't ?
+---
 
-Checkout the Whiteboard Working Live URL - https://whiteboard-socketio.herokuapp.com/
+## ✨ Features
 
-## How to use
+- 🖌️ **Drawing Tools:** Pencil, Line, Rectangle, Circle, Ellipse, and Text insertion.
+- ⚡ **Real-Time Synchronization:** Live drawing sync across all connected clients via Socket.IO.
+- 📜 **Canvas History (Catch-Up):** New users instantly receive previous drawing history upon joining.
+- 🗑️ **Global Board Reset:** Synchronized "Clear All" action clears the canvas for all connected users simultaneously.
+- 👥 **Active User Counter:** Real-time online user count badge.
+- 🌓 **Theme Toggle:** Switch between Light and Dark themes.
+- 📥 **Export Board:** Download the current board state as a PNG image.
 
-This is built using Nodejs Server to run this git clone the repo. 
+---
 
-```
-$ npm install
-```
+## 🛠️ Tech Stack
 
-```
-$ node index.js
-```
+- **Frontend:** HTML5 Canvas, CSS3, JavaScript (ES6+)
+- **Backend:** Node.js, Express.js
+- **Real-Time Engine:** Socket.IO
 
-And open `http://localhost:3001` in browser. Optionally, specify a port by supplying the `PORT` env variable.
+---
 
-> Note : Enable heroku features:enable http-session-affinity in your instance while deploying to heroku. This is necessary to open communication ports for web sockets.
+## 🚀 Getting Started Locally
 
-
-## Features
-
-- Draw on the whiteboard and all other users will see you drawings live.
-- Ability for each user to use their seperate drawing tool.
-- Choose Colours, fonts, fontsizes and thinkness.
-
-Thanks and credits to [Socket.IO](https://socket.io/) :yellow_heart:
-
-PS: Previous sessions are not saved on the server, it will not be available for newly joined. Save sessions if you want. Since listening only to mouse events it will not work on mobile touch. Add listen for touch events if you want. 😊
-
-## License
-
-[MIT](https://github.com/devansvd/whiteboard-socketio/blob/master/LICENSE.md)
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/prapoorna-15/devsync-board.git](https://github.com/prapoorna-15/devsync-board.git)
+   cd devsync-board
