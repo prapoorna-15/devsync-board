@@ -1,24 +1,16 @@
 const express = require('express');
-const http = require('http');
-const path = require('path');
-const { Server } = require('socket.io');
-
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
-  }
-});
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const path = require('path');
 
-// Serve all static files from the public directory
-const publicPath = path.join(__dirname, 'public');
-app.use(express.static(publicPath));
+const port = process.env.PORT || 3001;
 
-// Fallback route to serve index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(publicPath, 'index.html'));
+// Use path.join to resolve directory paths safely on Linux
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 let drawingHistory = [];
@@ -28,7 +20,6 @@ io.on('connection', (socket) => {
   onlineUsers++;
   io.emit('users_count', onlineUsers);
 
-  // Send drawing history to newly connected client
   socket.emit('history', drawingHistory);
 
   socket.on('drawing', (data) => {
@@ -36,9 +27,9 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('drawing', data);
   });
 
-  socket.on('Clearboard', () => {
+  socket.on('Clearboard', (data) => {
     drawingHistory = [];
-    io.emit('Clearboard');
+    io.emit('Clearboard', data);
   });
 
   socket.on('disconnect', () => {
@@ -47,7 +38,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 10000;
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on port ${PORT}`);
+// Bind to host 0.0.0.0 for Render
+http.listen(port, '0.0.0.0', () => {
+  console.log('Listening on port ' + port);
 });
