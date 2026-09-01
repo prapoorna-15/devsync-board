@@ -14,7 +14,7 @@ A real-time collaborative whiteboard web application built with **Node.js**, **E
 - 👥 **Active User Counter:** Real-time online user count badge.
 - 🌓 **Theme Toggle:** Switch between Light and Dark themes.
 - 📥 **Export Board:** Download the current board state as a PNG image.
-
+      **Isolated Multi-Room Support:** Multiple teams can work simultaneously on separate boards without canvas collisions using custom room URLs.
 ---
 
 ## 🛠️ Tech Stack
@@ -34,4 +34,13 @@ A real-time collaborative whiteboard web application built with **Node.js**, **E
 
    ## 🌐 Live Demo
 
+## 👥 Multi-Room Usage
+
+To create or join an isolated drawing room, simply pass a `room` parameter in the URL:
+
+* **Team Alpha Board:** `https://devsync-board.onrender.com/?room=team-alpha`
+* **Team Beta Board:** `https://devsync-board.onrender.com/?room=team-beta`
+* **Default Board:** `https://devsync-board.onrender.com` (connects to the `main` room)
+
+Each room maintains its own drawing state, user count, and history.
 Check out the live application here: [DevSync Board Live](https://devsync-board.onrender.com)
